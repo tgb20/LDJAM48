@@ -8,6 +8,8 @@ public class TrashcanController : MonoBehaviour
     public GameObject TileSelected;
     public GameObject WaterTile;
 
+    public AudioSource DeleteSound;
+
     // Update is called once per frame
     void Update()
     {
@@ -23,6 +25,7 @@ public class TrashcanController : MonoBehaviour
                     {
                         Instantiate(WaterTile, TileSelected.transform.position, TileSelected.transform.rotation, null);
                         Destroy(TileSelected);
+                        DeleteSound.Play();
                     }
                 }
             }

@@ -49,6 +49,9 @@ public class MenuItem : MonoBehaviour
 
                         Instantiate(TileToSpawn, TileSelected.transform.position, randomDirection, null);
                         Destroy(TileSelected);
+
+                        GameObject.FindGameObjectWithTag("PlaceAudio").GetComponent<AudioSource>().Play();
+
                     }
                 }
             }

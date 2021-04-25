@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ResourceManager : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class ResourceManager : MonoBehaviour
     public TMP_Text SupportText;
     public static ResourceManager Instance { get; private set; }
 
+    private AudioSource _audioSource;
+
     public bool CheatMode = false;
 
     private int _nextPaidInterval = 250;
@@ -43,13 +46,19 @@ public class ResourceManager : MonoBehaviour
         else { Destroy(gameObject); }
     }
 
+    private void Start()
+    {
+        InvokeRepeating("GetPaid", 5, 5);
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
-        PowerText.text = $"{Energy} (+{EnergyGain}/-{EnergyCost})";
-        PeopleText.text = $"{People} (+{PeopleGain}/-{PeopleCost})";
-        DepthText.text = $"{Depth}m";
-        MoneyText.text = $"${Money}";
-        SupportText.text = $"{Support}";
+        PowerText.text = $"Energy: {Energy}";
+        PeopleText.text = $"People: {People}";
+        DepthText.text = $"{Depth}m Deep";
+        MoneyText.text = $"Money: ${Money}";
+        SupportText.text = $"{Mathf.Round(Support/10000f * 100)}% in Support";
 
         if (Input.GetKeyDown(KeyCode.M) && CheatMode)
         {
@@ -72,7 +81,7 @@ public class ResourceManager : MonoBehaviour
             else
             {
                 LazerController.LazerBeam.SetActive(false);
-                Support -= 1;
+                Support -= 2;
             }
 
             if (Depth >= _nextCostInterval)
@@ -88,24 +97,28 @@ public class ResourceManager : MonoBehaviour
             {
                 _reqBoost = false;
             }
-
-            if (Depth >= _nextPaidInterval)
-            {
-                if (!_getPaid)
-                {
-                    Money += (People * 25);
-                    _nextPaidInterval += 250;
-                    _getPaid = true;
-                }
-            }
-            else
-            {
-                _getPaid = false;
-            }
         }
         else
         {
-            Support -= 1;
+            Support -= 2;
         }
+
+        if (Support <= 0)
+        {
+            SceneManager.LoadScene("FailScene");
+        }
+
+        if (Depth >= 50000)
+        {
+            SceneManager.LoadScene("WinScene");
+        }
+
+
+    }
+
+    public void GetPaid()
+    {
+        Money += (People * 25);
+        _audioSource.Play();
     }
 }
