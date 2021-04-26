@@ -105,12 +105,12 @@ public class ResourceManager : MonoBehaviour
 
         if (Support <= 0)
         {
-            SceneManager.LoadScene("FailScene");
+            SceneManager.LoadScene("FailScene", LoadSceneMode.Single);
         }
 
         if (Depth >= 50000)
         {
-            SceneManager.LoadScene("WinScene");
+            SceneManager.LoadScene("WinScene", LoadSceneMode.Single);
         }
 
 
@@ -118,7 +118,10 @@ public class ResourceManager : MonoBehaviour
 
     public void GetPaid()
     {
-        Money += (People * 25);
-        _audioSource.Play();
+        if (People > 0)
+        {
+            Money += (People * 25);
+            _audioSource.Play();
+        }
     }
 }
